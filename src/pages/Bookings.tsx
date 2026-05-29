@@ -10,7 +10,9 @@ import {
 } from 'react-icons/fa6';
 import { mandir } from '../assets/imageConstants';
 import Footer from '../components/footer/Footer';
+import InfoCard from '../components/InfoCard';
 import ScrollToTop from '../components/ScrollToTop';
+import { topCardsData } from '../data/cardData';
 
 const Bookings = () => {
   const { t } = useTranslation();
@@ -225,7 +227,16 @@ const Bookings = () => {
           </div>
         </div>
       </section>
-
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+        {topCardsData.map((card) => (
+          <InfoCard
+            key={card.id}
+            icon={<span className="text-3xl">{card.icon}</span>}
+            title={t(card.titleKey)}
+            description={t(card.descriptionKey)}
+          />
+        ))}
+      </div>
       <section className="bg-gray-50 px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl overflow-hidden rounded-lg bg-white shadow-[0_20px_70px_rgba(31,41,55,0.12)]">
           <div className="grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr]">
