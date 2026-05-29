@@ -1,0 +1,72 @@
+.App {
+  width: 100vw;
+  margin: auto;
+}
+
+.container-lg {
+  width: 1600px;
+  margin: 0 auto;
+}
+
+.bg-gradient-1 {
+  background: linear-gradient(to bottom,#ffffff 0%,#ffffff 67%,#F2F4F4 67%,#F2F4F4 100%)!important;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+@media (max-width: 1600px) {
+  .container-lg {
+    width: 1400px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 1400px) {
+  .container-lg {
+    width: 1200px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 1200px) {
+  .container-lg {
+    width: 992px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 992px) {
+  .container-lg {
+    width: 768px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .container-lg {
+    width: 576px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 576px) {
+  .container-lg {
+    width: 420px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 420px) {
+  .container-lg {
+    width: 350px;
+    margin: 0 auto;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
