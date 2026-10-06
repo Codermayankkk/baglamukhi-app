@@ -1,75 +1,23 @@
-# React + TypeScript + Vite
+# Baglamukhi Mataji Mandir
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Responsive React and TypeScript website based on the Methodical Operators Framer design. The previous multi-page design has been replaced by a single page with offerings, devotional packages, visitor guidance, and an English/Hindi switch.
 
-Currently, two official plugins are available:
+## Development
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Use Node.js 22.12+ (or 20.19+) and npm:
 
-## React Compiler
-
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
-
-Note: This will impact Vite dev & build performances.
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```sh
+npm ci
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+`npm run build` runs TypeScript checks and creates `dist/`. `npm run lint` runs ESLint. `npm run preview` serves the production build locally. Existing Docker/nginx configuration also serves the built site.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Content and design
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- `src/App.tsx`: page structure and interactions.
+- `src/content.ts`: English and Hindi text.
+- `src/index.css`: reference styling and responsive breakpoints.
+- `src/assets/images/`: the four reference photographs and existing favicon.
+
+The reference photographs are illustrative stock imagery, not verified photographs of this temple. Fonts currently load through Google Fonts. WhatsApp package links preserve the existing app's booking number, +91 8959040275, and open a prefilled enquiry without sending it automatically. The navbar speaker toggles a locally bundled, looping Om chant at 45% volume; it never autoplays. Audio source and CC0 license details are in `src/assets/audio/README.md`. Temple details require confirmation before public launch.
