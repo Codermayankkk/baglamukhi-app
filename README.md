@@ -1,6 +1,6 @@
-# Baglamukhi Mataji Mandir
+# Baglamukhi Mataji Packages
 
-Responsive React and TypeScript website based on the Methodical Operators Framer design. The previous multi-page design has been replaced by a single page with offerings, devotional packages, visitor guidance, and an English/Hindi switch.
+Responsive React and TypeScript package-booking website for Maa Baglamukhi Mandir, Nalkheda. The UI follows the supplied temple reference with its maroon, red and yellow palette, utility contact bar, navigation, announcement ticker, devotional packages, callout, footer and floating WhatsApp action.
 
 ## Development
 
@@ -11,13 +11,13 @@ npm ci
 npm run dev
 ```
 
-`npm run build` runs TypeScript checks and creates `dist/`. `npm run lint` runs ESLint. `npm run preview` serves the production build locally. Existing Docker/nginx configuration also serves the built site.
+`npm run build` runs TypeScript checks and creates `dist/`. `npm run lint` runs ESLint. The existing Docker and nginx configuration serves the production build.
 
-## Content and design
+## Main files
 
-- `src/App.tsx`: page structure and interactions.
-- `src/content.ts`: English and Hindi text.
-- `src/index.css`: reference styling and responsive breakpoints.
-- `src/assets/images/`: the four reference photographs and existing favicon.
+- `src/App.tsx`: page content, mobile navigation and Om audio controls.
+- `src/index.css`: complete responsive visual system.
+- `src/assets/images/`: local temple logo and favicon.
+- `src/assets/audio/`: locally bundled CC0 Om chant and its source details.
 
-The reference photographs are illustrative stock imagery, not verified photographs of this temple. Fonts currently load through Google Fonts. WhatsApp package links preserve the existing app's booking number, +91 8959040275, and open a prefilled enquiry without sending it automatically. The navbar speaker toggles a locally bundled, looping Om chant at 45% volume; it never autoplays. Audio source and CC0 license details are in `src/assets/audio/README.md`. Temple details require confirmation before public launch.
+The Om chant starts only after a visitor presses the navbar control. WhatsApp links open a prefilled booking enquiry and never send it automatically.
