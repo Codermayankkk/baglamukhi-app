@@ -1,144 +1,91 @@
-import { useRef, useState } from 'react'
-import { FaBars, FaBed, FaCheck, FaFire, FaHandsPraying, FaWhatsapp, FaXmark } from 'react-icons/fa6'
+import { createContext, useContext, useEffect, useRef, useState } from 'react'
+import { FaBars, FaBed, FaCalendarDays, FaCheck, FaChevronDown, FaFire, FaHandsPraying, FaLocationDot, FaPhone, FaWhatsapp, FaXmark } from 'react-icons/fa6'
 import { FiVolume2, FiVolumeX } from 'react-icons/fi'
 import omChant from './assets/audio/om-chant.mp3'
 import maaLogo from './assets/images/maa-logo.png'
+import havanImage from './assets/images/vedic-havan.png'
+import realMaaImage from './assets/images/baglamukhi-mataji-real.webp'
+import templeImage from './assets/images/nalkheda-temple-real.jpg'
+import templeDarshanImage from './assets/images/nalkheda-temple-darshan.jpg'
+import templeNightImage from './assets/images/nalkheda-temple-night.jpg'
 
-const announcements = [
-  'Weekly Sukh-Shanti Havan every Tuesday at 5 PM – Book now for peace and clarity',
-  'Dhan-Lakshmi Prapti Havan every Thursday at 5 PM – Invite wealth and prosperity',
-  'Limited slots for Havan & Chola Rasam this month',
+const phone = '919425428725'
+const whatsapp = (text = 'Jai Maa Baglamukhi, mujhe seva aur booking ki jaankari chahiye.') => `https://wa.me/${phone}?text=${encodeURIComponent(text)}`
+type Language = 'en' | 'hi'
+const LanguageContext = createContext<{language:Language; setLanguage:(language:Language)=>void}>({language:'en',setLanguage:()=>undefined})
+function T({en,hi}:{en:string;hi:string}){const{language}=useContext(LanguageContext);return <>{language==='hi'?hi:en}</>}
+type LinkItem = { label: string; path: string }
+const havanLinks: LinkItem[] = [
+  { label: 'Victory & Enemy Neutralization', path: '/victory-enemy-neutralization/' },
+  { label: 'Spiritual Empowerment & Ritual Practice', path: '/spiritual-empowerment-ritual-practice/' },
+  { label: 'Material Prosperity & Personal Growth', path: '/material-prosperity-personal-growth/' },
+  { label: 'Attraction, Release & Academic Support', path: '/attraction-release-academic-support/' },
+  { label: 'Public Life & Political Aspirations', path: '/public-life-political-aspirations/' },
 ]
-
-const navigation = [
-  { label: 'Home', href: '#top' },
-  { label: 'Havan', href: '#packages' },
-  { label: 'Packages', href: '#packages' },
-  { label: 'Contact', href: '#contact' },
+const locationLinks: LinkItem[] = [
+  { label: 'Australia', path: '/australia/baglamukhi-puja-online/' },
+  { label: 'New Zealand', path: '/new-zealand/baglamukhi-puja-online/' },
+  { label: 'UAE', path: '/uae/baglamukhi-puja-online/' },
 ]
-
-function App() {
-  const [menuOpen, setMenuOpen] = useState(false)
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [isStarting, setIsStarting] = useState(false)
-  const [audioError, setAudioError] = useState(false)
-  const audioRef = useRef<HTMLAudioElement>(null)
-
-  const toggleChanting = async () => {
-    const audio = audioRef.current
-    if (!audio || isStarting) return
-    setAudioError(false)
-    if (!audio.paused) {
-      audio.pause()
-      return
-    }
-    setIsStarting(true)
-    audio.volume = 0.45
-    try {
-      await audio.play()
-    } catch {
-      setIsPlaying(false)
-      setAudioError(true)
-    } finally {
-      setIsStarting(false)
-    }
-  }
-
-  return (
-    <>
-      <audio ref={audioRef} src={omChant} loop preload="none" onPlaying={() => setIsPlaying(true)} onPause={() => setIsPlaying(false)} onError={() => setAudioError(true)} />
-      <a className="skip-link" href="#content">Skip to content</a>
-      <header>
-        <div className="utility-bar">
-          <div className="shell utility-inner">
-            <div className="contact-links">
-              <a href="https://wa.me/919425428725" target="_blank" rel="noreferrer"><FaWhatsapp aria-hidden="true" /> +91 94254 28725</a>
-            </div>
-            <div className="utility-actions">
-              <button className={`chant-button ${isPlaying ? 'playing' : ''}`} onClick={toggleChanting} disabled={isStarting} aria-pressed={isPlaying} aria-label={isPlaying ? 'Pause Om chanting' : 'Play Om chanting'}>
-                {isPlaying ? <FiVolume2 aria-hidden="true" /> : <FiVolumeX aria-hidden="true" />} Om · {isPlaying ? 'On' : 'Off'}
-              </button>
-              <a className="pill-link" href="#packages">Puja Seva</a>
-            </div>
-          </div>
-        </div>
-        <div className="main-nav">
-          <div className="shell nav-inner">
-            <a className="brand" href="#top" aria-label="Priyanshu Pujari, Baglamukhi Mataji home">
-              <img src={maaLogo} alt="Maa Baglamukhi" />
-              <span><strong>Priyanshu Pujari</strong><small>Maa Baglamukhi Mandir, Nalkheda</small></span>
-            </a>
-            <button className="menu-button" onClick={() => setMenuOpen(value => !value)} aria-expanded={menuOpen} aria-controls="primary-navigation" aria-label={menuOpen ? 'Close menu' : 'Open menu'}>
-              {menuOpen ? <FaXmark /> : <FaBars />}
-            </button>
-            <nav id="primary-navigation" className={menuOpen ? 'nav-list open' : 'nav-list'} aria-label="Primary navigation">
-              {navigation.map(item => <a key={item.label} href={item.href} onClick={() => setMenuOpen(false)}>{item.label}</a>)}
-            </nav>
-          </div>
-        </div>
-        <div className="ticker" aria-label="Temple announcements">
-          <div className="ticker-track">{[...announcements, ...announcements].map((item, index) => <span key={`${item}-${index}`}>{item} <b>• Jai Maa Baglamukhi 🙏</b></span>)}</div>
-        </div>
-      </header>
-      {audioError && <p className="audio-error" role="alert">Om chanting play nahi ho saka. Speaker button dobara press karein.</p>}
-
-      <main id="content">
-        <section className="page-banner" id="top">
-          <div className="banner-flower left" aria-hidden="true">✦</div>
-          <h1>Devotional Packages</h1>
-          <p>Hawan, Chola Seva aur Guest House booking</p>
-          <div className="banner-flower right" aria-hidden="true">✦</div>
-        </section>
-        <section className="packages-section" id="packages">
-          <div className="shell">
-            <div className="section-title">
-              <p>PLAN WITH PEACE OF MIND</p>
-              <h2>Choose your devotional package</h2>
-              <span>Same-day pooja ya stay ke saath complete seva package choose karein. Date aur availability WhatsApp par confirm hogi.</span>
-            </div>
-            <div className="packages-grid">
-              <article className="package-card">
-                <div className="package-number">01</div>
-                <p className="package-label">SAME DAY POOJA PACKAGE</p>
-                <h3>1 Day Package</h3>
-                <ul>
-                  <li><FaFire aria-hidden="true" /><span>Hawan Booking</span><FaCheck aria-hidden="true" /></li>
-                  <li><FaHandsPraying aria-hidden="true" /><span>Chola Booking</span><FaCheck aria-hidden="true" /></li>
-                </ul>
-                <a href="https://wa.me/919425428725?text=Jai%20Maa%20Baglamukhi%2C%20mujhe%201%20Day%20Package%20book%20karna%20hai." target="_blank" rel="noreferrer"><FaWhatsapp aria-hidden="true" /> Book Package</a>
-              </article>
-              <article className="package-card featured">
-                <div className="popular-tag">COMPLETE SEVA</div>
-                <div className="package-number">02</div>
-                <p className="package-label">STAY KE SAATH COMPLETE BOOKING</p>
-                <h3>1 Day – 1 Night Package</h3>
-                <ul>
-                  <li><FaBed aria-hidden="true" /><span>Guest House</span><FaCheck aria-hidden="true" /></li>
-                  <li><FaFire aria-hidden="true" /><span>Hawan Booking</span><FaCheck aria-hidden="true" /></li>
-                  <li><FaHandsPraying aria-hidden="true" /><span>Chola Booking</span><FaCheck aria-hidden="true" /></li>
-                </ul>
-                <a href="https://wa.me/919425428725?text=Jai%20Maa%20Baglamukhi%2C%20mujhe%201%20Day%20-%201%20Night%20Package%20book%20karna%20hai." target="_blank" rel="noreferrer"><FaWhatsapp aria-hidden="true" /> Book Package</a>
-              </article>
-            </div>
-            <p className="package-note">Booking, contribution amount aur room availability temple team WhatsApp par confirm karegi. Website par koi online payment collect nahi kiya jata.</p>
-          </div>
-        </section>
-      </main>
-
-      <footer>
-        <div className="footer-main">
-          <div className="shell footer-grid">
-            <div className="footer-about"><div className="footer-brand"><img src={maaLogo} alt="Maa Baglamukhi" /><span><strong>Priyanshu Pujari</strong><small>Maa Baglamukhi Mandir, Nalkheda</small></span></div><p>Maa Baglamukhi does not merely bless, She rewrites destiny for her bhaktas. Surrender your doubts, fears and battles at Her golden feet.</p></div>
-            <div><h3>Useful Links</h3><ul><li><a href="#top">Home</a></li><li><a href="#packages">Packages</a></li><li><a href="#contact">Contact Us</a></li></ul></div>
-            <div><h3>Puja</h3><ul><li><a href="#packages">Victory & Protection</a></li><li><a href="#packages">Spiritual Empowerment</a></li><li><a href="#packages">Prosperity & Growth</a></li><li><a href="#packages">Special Havan</a></li></ul></div>
-            <div id="contact"><h3>Contact Us</h3><ul className="contact-list"><li><FaWhatsapp /><a href="https://wa.me/919425428725" target="_blank" rel="noreferrer">+91 94254 28725</a></li></ul></div>
-          </div>
-        </div>
-        <div className="copyright">Baglamukhi Mataji © 2026. All rights reserved.</div>
-      </footer>
-      <a className="floating-whatsapp" href="https://wa.me/919425428725?text=Jai%20Maa%20Baglamukhi%2C%20mujhe%20seva%20aur%20booking%20ki%20jaankari%20chahiye." target="_blank" rel="noreferrer" aria-label="Chat with Priyanshu Pujari on WhatsApp"><FaWhatsapp /></a>
-    </>
-  )
+const directLinks: LinkItem[] = [
+  { label: 'Home', path: '/' }, { label: 'Gallery', path: '/gallery/' }, { label: 'FAQs', path: '/faqs/' },
+  { label: 'About', path: '/about/' }, { label: 'Packages', path: '/packages/' }, { label: 'Contact', path: '/contact/' }, { label: 'Blog', path: '/blog/' },
+]
+const announcements = ['Weekly Sukh-Shanti Havan every Tuesday at 5 PM', 'Dhan-Lakshmi Prapti Havan every Thursday at 5 PM', 'Limited slots for Havan & Chola Rasam this month']
+const havanData: Record<string, { title: string; intro: string; services: string[] }> = {
+  '/victory-enemy-neutralization/': { title: 'Victory & Enemy Neutralization', intro: 'Maa Baglamukhi ki Stambhan Shakti vipaksh, kanooni pareshani aur nakaratmak prabhav se raksha ke liye pooji jaati hai.', services: ['Shatru Badha Nivaran Havan', 'Court Case Vijay Puja', 'Stambhan Prayog', 'Protection Sankalp'] },
+  '/spiritual-empowerment-ritual-practice/': { title: 'Spiritual Empowerment & Ritual Practice', intro: 'Mantra jaap aur vaidik anushthan man ko sthir karte hain aur sadhak ko Maa ki divya shakti se jodte hain.', services: ['Baglamukhi Mantra Jaap', 'Vishesh Anushthan', 'Sukh-Shanti Havan', 'Spiritual Protection'] },
+  '/material-prosperity-personal-growth/': { title: 'Material Prosperity & Personal Growth', intro: 'Samriddhi, parivarik sukh aur jeevan ki rukawaton ko door karne ke liye samarpit puja sevayein.', services: ['Dhan Lakshmi Prapti', 'Vivah Badha Nivaran', 'Santan Prapti Puja', 'Vyapar Vriddhi Havan'] },
+  '/attraction-release-academic-support/': { title: 'Attraction, Release & Academic Support', intro: 'Sakaratmak avsar, nakaratmak bandhan se mukti aur vidyarthiyon ki ekagrata ke liye vishesh prayog.', services: ['Aakarshan Prayog', 'Uchchatan Prayog', 'Student Success Puja', 'Buddhi aur Smriti Havan'] },
+  '/public-life-political-aspirations/': { title: 'Public Life & Political Aspirations', intro: 'Netritva, jan-samarthan aur vipaksh se suraksha ke liye Maa Baglamukhi ka vishesh Rajneeti Vijay anushthan.', services: ['Rajneeti Vijay Puja', 'Lokpriyata Sankalp', 'Virodh Shanti Havan', 'Leadership Anushthan'] },
 }
-
-export default App
+function go(path: string) { history.pushState({}, '', path); window.dispatchEvent(new PopStateEvent('popstate')); window.scrollTo(0, 0) }
+function AppLink({ path, children, className = '', onClick }: { path: string; children: React.ReactNode; className?: string; onClick?: () => void }) {
+  return <a href={path} className={className} onClick={e => { e.preventDefault(); go(path); onClick?.() }}>{children}</a>
+}
+function Header() {
+  const {language,setLanguage}=useContext(LanguageContext)
+  const [menuOpen, setMenuOpen] = useState(false), [isPlaying, setIsPlaying] = useState(false), [audioError, setAudioError] = useState(false)
+  const audioRef = useRef<HTMLAudioElement>(null)
+  const toggleAudio = async () => { const a = audioRef.current; if (!a) return; setAudioError(false); if (!a.paused) return a.pause(); a.volume = .45; try { await a.play() } catch { setAudioError(true) } }
+  return <>
+    <audio ref={audioRef} src={omChant} loop preload="none" onPlaying={() => setIsPlaying(true)} onPause={() => setIsPlaying(false)} />
+    <a className="skip-link" href="#content">Skip to content</a>
+    <header>
+      <div className="utility-bar"><div className="shell utility-inner"><a href={whatsapp()} target="_blank" rel="noreferrer"><FaWhatsapp /> +91 94254 28725</a><div className="utility-actions"><button className={`chant-button ${isPlaying ? 'playing' : ''}`} onClick={toggleAudio}>{isPlaying ? <FiVolume2 /> : <FiVolumeX />} Om · {isPlaying ? 'On' : 'Off'}</button><div className="language-toggle" role="group" aria-label="Language"><button className={language==='en'?'active':''} onClick={()=>setLanguage('en')}>EN</button><button className={language==='hi'?'active':''} onClick={()=>setLanguage('hi')}>हिं</button></div><AppLink className="pill-link" path="/donations/"><T en="Puja Seva" hi="पूजा सेवा"/></AppLink><AppLink className="pill-link" path="/events/"><T en="Events" hi="उत्सव"/></AppLink></div></div></div>
+      <div className="main-nav"><div className="shell nav-inner"><AppLink className="brand" path="/"><img src={maaLogo} alt="Maa Baglamukhi"/><span><strong>Priyanshu Pujari</strong><small>Maa Baglamukhi Mandir, Nalkheda</small></span></AppLink><button className="menu-button" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">{menuOpen ? <FaXmark/> : <FaBars/>}</button><nav className={`nav-list ${menuOpen ? 'open' : ''}`}>
+        <AppLink path="/" onClick={() => setMenuOpen(false)}><T en="Home" hi="मुखपृष्ठ"/></AppLink>
+        <div className="nav-dropdown"><button><T en="Havan" hi="हवन"/> <FaChevronDown/></button><div className="dropdown-panel">{havanLinks.map(x => <AppLink key={x.path} path={x.path} onClick={() => setMenuOpen(false)}>{x.label}</AppLink>)}</div></div>
+        {directLinks.slice(1).map(x => <AppLink key={x.path} path={x.path} onClick={() => setMenuOpen(false)}>{language==='hi'?({Gallery:'गैलरी',FAQs:'प्रश्न',About:'परिचय',Packages:'पैकेज',Contact:'संपर्क',Blog:'लेख'}[x.label]||x.label):x.label}</AppLink>)}
+        <div className="nav-dropdown"><button><T en="Locations" hi="स्थान"/> <FaChevronDown/></button><div className="dropdown-panel">{locationLinks.map(x => <AppLink key={x.path} path={x.path} onClick={() => setMenuOpen(false)}>{x.label}</AppLink>)}</div></div>
+      </nav></div></div>
+      <div className="ticker"><div className="ticker-track">{[...announcements, ...announcements].map((x,i)=><span key={i}>{x} <b>• Jai Maa Baglamukhi 🙏</b></span>)}</div></div>
+    </header>{audioError && <p className="audio-error">Om chanting play nahi ho saka. Speaker button dobara press karein.</p>}
+  </>
+}
+function Banner({ title, subtitle }: { title: string; subtitle?: string }) { return <section className="page-banner"><h1>{title}</h1>{subtitle && <p>{subtitle}</p>}</section> }
+function CTA({ text = 'Book on WhatsApp' }: { text?: string }) { return <a className="cta" href={whatsapp(`Jai Maa Baglamukhi, mujhe ${text} ki jaankari chahiye.`)} target="_blank" rel="noreferrer"><FaWhatsapp/> {text}</a> }
+function SectionTitle({ kicker, title, text }: { kicker:string; title:string; text?:string }) { return <div className="section-title"><p>{kicker}</p><h2>{title}</h2>{text && <span>{text}</span>}</div> }
+function PujaFinder(){
+  const {language}=useContext(LanguageContext)
+  const [choice,setChoice]=useState(havanLinks[0].path)
+  const selected=havanData[choice]
+  return <section className="finder-section"><div className="shell finder-grid"><div><p className="eyebrow"><T en="PERSONAL PUJA GUIDE" hi="व्यक्तिगत पूजा मार्गदर्शन"/></p><h2><T en="What would you like to seek Maa's blessings for?" hi="आप किस उद्देश्य के लिए माँ का आशीर्वाद चाहते हैं?"/></h2><p><T en="Select your need. We will guide you to a suitable havan and anushthan." hi="अपनी आवश्यकता चुनें। हम आपको उचित हवन और अनुष्ठान तक मार्गदर्शन देंगे।"/></p><div className="finder-options">{havanLinks.map(x=><button key={x.path} className={choice===x.path?'active':''} onClick={()=>setChoice(x.path)}>{x.label}</button>)}</div></div><div className="finder-result"><span><T en="RECOMMENDED SEVA" hi="सुझाई गई सेवा"/></span><h3>{selected.title}</h3><p>{selected.intro}</p><ul>{selected.services.slice(0,3).map(x=><li key={x}><FaCheck/> {x}</li>)}</ul><div><AppLink className="finder-link" path={choice}><T en="View details" hi="विवरण देखें"/></AppLink><CTA text={language==='hi'?`${selected.title} पर चर्चा करें`:`Discuss ${selected.title}`}/></div></div></div></section>
+}
+function PriestSection(){const{language}=useContext(LanguageContext);return <section className="priest-section"><div className="shell priest-grid"><div className="priest-seal"><div><img src={maaLogo} alt="Maa Baglamukhi"/><span>परंपरा · श्रद्धा · सेवा</span></div></div><div><p className="eyebrow"><T en="YOUR PUJA GUIDE" hi="आपके पूजा मार्गदर्शक"/></p><h2>Priyanshu Pujari</h2><p className="lead"><T en="Every puja is a personal sankalp. Your circumstances are understood before guiding you about the seva, time and Vedic process." hi="हर पूजा एक व्यक्तिगत संकल्प है। आपकी परिस्थिति समझकर सेवा, समय और वैदिक विधि का मार्गदर्शन दिया जाता है।"/></p><div className="priest-points"><span><b>01</b><T en="Personal consultation" hi="व्यक्तिगत परामर्श"/></span><span><b>02</b><T en="Vedic puja process" hi="वैदिक पूजा विधि"/></span><span><b>03</b><T en="Direct WhatsApp support" hi="सीधा व्हाट्सऐप सहयोग"/></span></div><CTA text={language==='hi'?'प्रियांशु पुजारी से परामर्श':'Consult Priyanshu Pujari'}/></div></div></section>}
+function Home() { const{language}=useContext(LanguageContext); return <><section className="hero"><div className="hero-mandala" aria-hidden="true">ॐ</div><div className="shell hero-grid"><div><p className="eyebrow"><T en="MAA BAGLAMUKHI MANDIR · NALKHEDA" hi="माँ बगलामुखी मंदिर · नलखेड़ा"/></p><h1>{language==='hi'?<>जहाँ भक्ति बनती है <em>दिव्य शक्ति।</em></>:<>Where devotion becomes <em>divine strength.</em></>}</h1><p><T en="Vedic havan, anushthan and chola seva at the sacred Siddh Peeth under the guidance of Priyanshu Pujari." hi="माँ बगलामुखी के पवित्र सिद्ध पीठ में प्रियांशु पुजारी के मार्गदर्शन में वैदिक हवन, अनुष्ठान और चोला सेवा।"/></p><div className="hero-actions"><CTA text={language==='hi'?'अपना संकल्प प्रारंभ करें':'Begin Your Sankalp'}/><AppLink className="outline-btn" path="/about/"><T en="Discover Nalkheda Dham" hi="नलखेड़ा धाम के बारे में जानें"/></AppLink></div><div className="hero-trust"><span>✦ <T en="Personal Sankalp" hi="व्यक्तिगत संकल्प"/></span><span>✦ <T en="Authentic Vedic Vidhi" hi="प्रामाणिक वैदिक विधि"/></span><span>✦ <T en="Live Guidance" hi="प्रत्यक्ष मार्गदर्शन"/></span></div></div><figure className="deity-card"><div className="arch-inner"><img src={realMaaImage} alt="Actual Maa Baglamukhi idol at Nalkheda Siddh Peeth"/></div><figcaption><small>नलखेड़ा सिद्ध पीठ के वास्तविक दर्शन</small>॥ ॐ ह्लीं बगलामुखी देव्यै नमः ॥</figcaption></figure></div></section><PujaFinder/><section className="image-story"><img src={havanImage} alt="Sacred Vedic havan arranged with marigold flowers and traditional offerings"/><div><p className="eyebrow"><T en="THE SACRED FIRE" hi="पवित्र अग्नि"/></p><h2><T en="Every offering carries your sankalp." hi="हर आहुति आपका संकल्प लेकर जाती है।"/></h2><p><T en="Every havan is performed with Vedic mantras, pure samagri and the devotee's personal sankalp." hi="मंदिर में हर हवन वैदिक मंत्र, शुद्ध सामग्री और भक्त के व्यक्तिगत संकल्प के साथ संपन्न होता है।"/></p><AppLink path="/packages/"><T en="Explore devotional packages →" hi="पूजा पैकेज देखें →"/></AppLink></div></section><section className="content-section"><div className="shell"><SectionTitle kicker={language==='hi'?'पवित्र सेवाएँ':'SACRED SERVICES'} title={language==='hi'?'हवन, अनुष्ठान और पूजा':'Hawan, Anushthan and Pujas'}/><div className="service-grid">{havanLinks.map((x,i)=><article className="service-card" key={x.path}><span>0{i+1}</span><h3>{x.label}</h3><p>{havanData[x.path].intro}</p><AppLink path={x.path}><T en="Explore seva →" hi="सेवा देखें →"/></AppLink></article>)}</div></div></section><PriestSection/><Process/></> }
+function HavanPage({ data }: { data: typeof havanData[string] }) { return <><Banner title={data.title} subtitle="Authentic Vedic seva at Maa Baglamukhi Mandir, Nalkheda"/><section className="content-section"><div className="shell detail-layout"><article><p className="lead">{data.intro}</p><h2>Available Puja & Havan Seva</h2><div className="check-grid">{data.services.map(x=><div key={x}><FaCheck/><span>{x}</span></div>)}</div><p>Har anushthan bhakt ke naam, gotra aur sankalp ke saath vaidik vidhi se kiya jata hai. Samagri, samay aur dakshina ki poori jaankari booking se pehle WhatsApp par di jayegi.</p><CTA text={`Book ${data.title}`}/></article><aside className="sacred-panel"><FaFire/><h3>Personal Sankalp</h3><p>Aapke uddeshya ke anusaar puja vidhi aur mantra jaap nirdharit kiya jayega.</p><strong>Priyanshu Pujari</strong><a href="tel:+919425428725"><FaPhone/> +91 94254 28725</a></aside></div></section><Process/></> }
+function Packages() { const cards=[['1 Day Package',['Hawan Booking','Chola Booking']],['1 Day – 1 Night Package',['Guest House','Hawan Booking','Chola Booking']],['Personal Anushthan',['Personal Sankalp','Mantra Jaap','Recorded Puja']]]; return <><Banner title="Devotional Packages" subtitle="Hawan, Chola Seva aur stay ke saath complete booking"/><section className="content-section"><div className="shell"><SectionTitle kicker="PLAN WITH PEACE OF MIND" title="Choose your devotional package"/><div className="packages-grid">{cards.map((c,i)=><article className={`package-card ${i===1?'featured':''}`} key={c[0] as string}><div className="package-number">0{i+1}</div><h3>{c[0]}</h3><ul>{(c[1] as string[]).map(x=><li key={x}>{x==='Guest House'?<FaBed/>:<FaFire/>}<span>{x}</span><FaCheck/></li>)}</ul><CTA text={`Book ${c[0]}`}/></article>)}</div></div></section></> }
+function Events() { return <><Banner title="Events" subtitle="Temple celebrations and special anushthan"/><section className="content-section warm"><div className="shell event-layout"><div className="event-art"><FaCalendarDays/><span>NAVRATRI</span><strong>विशेष हवन एवं अनुष्ठान</strong><small>PRE-BOOKING प्रारंभ</small></div><article><h2>नवरात्रि विशेष हवन एवं अनुष्ठान</h2><p className="lead">इस नवरात्रि माँ बगलामुखी के चरणों में श्रद्धा अर्पित करें।</p><p>विशेष हवन, पूजन और अनुष्ठान के माध्यम से परिवार के सुख, शांति, समृद्धि और कल्याण की प्रार्थना करें।</p><div className="check-grid">{['हवन एवं अनुष्ठान','विशेष पूजन','अभिषेक','चोला एवं पोशाक सेवा'].map(x=><div key={x}><FaCheck/><span>{x}</span></div>)}</div><CTA text="Reserve Event Slot"/></article></div></section></> }
+function About() { return <><Banner title="About Maa Baglamukhi"/><section className="content-section"><div className="shell about-visual"><img src={templeImage} alt="A sacred Indian temple decorated with marigold flowers at sunrise"/><div className="prose"><h2>Maa Baglamukhi & Nalkheda Dham</h2><p>Maa Baglamukhi Das Mahavidya mein aathvi Mahavidya hain. Unki upasana raksha, spashtata, shatru badha nivaran aur jeevan mein vijay ke liye ki jaati hai.</p><p>Agar Malwa, Madhya Pradesh mein Lakhundar nadi ke tat par sthit Nalkheda Dham ek prachin Siddh Peeth hai. Parampara ke anusaar Mahabharat kaal mein Pandavon ne yahan Maa ki aradhana ki thi.</p><h2>Priyanshu Pujari</h2><p>Paramparik vaidik vidhi ke saath havan, puja, chola seva aur vyaktigat anushthan ke liye bhakton ka margdarshan karte hain.</p><CTA text="Speak with Priyanshu Pujari"/></div></div></section></> }
+function Gallery() { const items=[['Maa ke Vastavik Darshan',realMaaImage],['Vaidik Havan',havanImage],['Maa Baglamukhi Mandir, Nalkheda',templeImage],['Bhakton ka Darshan',templeDarshanImage],['Mandir ka Ratri Darshan',templeNightImage]]; return <><Banner title="Gallery" subtitle="Sacred moments from Maa Baglamukhi Mandir"/><section className="content-section"><div className="shell gallery-grid">{items.map(([label,image],i)=><figure className={`gallery-tile gallery-${i+1}`} key={label}><img src={image} alt={label}/><figcaption>{label}</figcaption></figure>)}</div></section></> }
+const faqs=[['Temple darshan timing kya hai?','Darshan timing aur aarti schedule mausam aur utsav ke anusaar badal sakta hai. Yatra se pehle WhatsApp par confirm karein.'],['Kya mandir mein entry fee hai?','Nahi, mandir darshan sabhi bhakton ke liye nishulk hai.'],['Havan ki booking kaise hogi?','WhatsApp par naam, gotra, seva aur preferred date share karein. Team availability confirm karegi.'],['Kya online puja available hai?','Haan, door rehne wale bhakt video call aur recorded seva ke madhyam se jud sakte hain.'],['Guest house available hai?','Limited stay facility package aur availability ke anusaar confirm hoti hai.']]
+function FAQs(){return <><Banner title="Frequently Asked Questions"/><section className="content-section"><div className="shell faq-list">{faqs.map(([q,a])=><details key={q}><summary>{q}</summary><p>{a}</p></details>)}</div></section></>}
+function Contact(){return <><Banner title="Contact Us" subtitle="Seva, booking aur yatra ki jaankari"/><section className="content-section"><div className="shell contact-layout"><div><SectionTitle kicker="JAI MAA BAGLAMUKHI" title="Priyanshu Pujari" text="WhatsApp par seva, date aur availability confirm karein."/><a className="contact-card" href={whatsapp()} target="_blank" rel="noreferrer"><FaWhatsapp/><span><small>WhatsApp / Call</small><strong>+91 94254 28725</strong></span></a><div className="contact-card"><FaLocationDot/><span><small>Temple</small><strong>Maa Baglamukhi Mandir, Nalkheda</strong></span></div></div><form className="enquiry" onSubmit={e=>e.preventDefault()}><h2>Booking Enquiry</h2><input aria-label="Name" placeholder="Your name"/><input aria-label="Phone" placeholder="WhatsApp number"/><select aria-label="Seva"><option>Select seva</option>{havanLinks.map(x=><option key={x.path}>{x.label}</option>)}</select><textarea aria-label="Message" placeholder="Your message" rows={5}/><button onClick={()=>window.open(whatsapp(),'_blank')}>Continue on WhatsApp</button></form></div></section></>}
+function Blog(){const posts=['Maa Baglamukhi ki Stambhan Shakti','Nalkheda Dham ki Mahima','Havan se pehle Sankalp ka mahatva','Chola Seva: Shraddha aur Samarpan','Navratri mein Maa ki Aradhana','Online Puja mein kaise judein'];return <><Banner title="Divine Journal" subtitle="Stories, traditions and puja guidance"/><section className="content-section"><div className="shell blog-grid">{posts.map((x,i)=><article key={x}><span>DEVOTION · {String(i+1).padStart(2,'0')}</span><h2>{x}</h2><p>Maa Baglamukhi ki upasana, parampara aur vaidik seva se judi saral aur upyogi jaankari.</p><AppLink path="/contact/">Ask the Pujari →</AppLink></article>)}</div></section></>}
+function Donations(){return <><Banner title="Puja Seva" subtitle="Offer your devotion with a personal sankalp"/><section className="content-section"><div className="shell"><SectionTitle kicker="SEVA OPTIONS" title="Choose a sacred offering" text="Payment website par collect nahi hota. Seva aur contribution WhatsApp par confirm hoga."/><div className="service-grid">{['Hawan Seva','Chola & Shringar','Annadan Seva','Deep & Pushp Seva'].map(x=><article className="service-card" key={x}><FaHandsPraying/><h3>{x}</h3><p>Apne naam aur sankalp ke saath Maa ke charanon mein seva arpit karein.</p><CTA text={x}/></article>)}</div></div></section></>}
+function LocationPage({ country }: {country:string}){return <><Banner title={`Baglamukhi Puja Online – ${country}`} subtitle="Live Vedic puja from Nalkheda Dham"/><section className="content-section"><div className="shell prose"><p className="lead">{country} mein rehne wale bhakt Maa Baglamukhi ka personal havan live WhatsApp video call ke madhyam se book kar sakte hain.</p><h2>How the online puja works</h2><div className="steps"><div><b>1</b><h3>Book</h3><p>Naam, gotra aur sankalp share karein.</p></div><div><b>2</b><h3>Schedule</h3><p>IST ke anusaar suitable samay confirm hoga.</p></div><div><b>3</b><h3>Join Live</h3><p>WhatsApp video call se puja mein judein.</p></div></div><p>Saari puja samagri mandir team arrange karti hai. Bhakt ko keval nirdharit samay par shraddha ke saath online judna hota hai.</p><CTA text={`Book Online Puja from ${country}`}/></div></section></>}
+function Process(){return <section className="process"><div className="shell"><SectionTitle kicker="SIMPLE & TRANSPARENT" title="How it works"/><div className="steps"><div><b>1</b><h3>Booking</h3><p>WhatsApp par seva select karein.</p></div><div><b>2</b><h3>Scheduling</h3><p>Date aur sankalp confirm karein.</p></div><div><b>3</b><h3>Puja Performing</h3><p>Vaidik vidhi se seva sampann hogi.</p></div><div><b>4</b><h3>Darshan</h3><p>Live ya recorded puja prapt karein.</p></div></div></div></section>}
+function Footer(){return <footer><div className="footer-main"><div className="shell footer-grid"><div className="footer-about"><div className="footer-brand"><img src={maaLogo} alt="Maa Baglamukhi"/><span><strong>Priyanshu Pujari</strong><small><T en="Maa Baglamukhi Mandir, Nalkheda" hi="माँ बगलामुखी मंदिर, नलखेड़ा"/></small></span></div><p><T en="Maa Baglamukhi does not merely bless, She rewrites destiny for her bhaktas." hi="माँ बगलामुखी केवल आशीर्वाद नहीं देतीं, वे अपने भक्तों का भाग्य बदल देती हैं।"/></p></div><div><h3><T en="Useful Links" hi="उपयोगी लिंक"/></h3><ul>{directLinks.slice(0,6).map(x=><li key={x.path}><AppLink path={x.path}>{x.label}</AppLink></li>)}</ul></div><div><h3><T en="Puja" hi="पूजा"/></h3><ul>{havanLinks.slice(0,4).map(x=><li key={x.path}><AppLink path={x.path}>{x.label}</AppLink></li>)}</ul></div><div><h3><T en="Contact Us" hi="संपर्क करें"/></h3><ul className="contact-list"><li><FaWhatsapp/><a href={whatsapp()} target="_blank" rel="noreferrer">+91 94254 28725</a></li><li><FaLocationDot/><span><T en="Nalkheda, Madhya Pradesh" hi="नलखेड़ा, मध्य प्रदेश"/></span></li></ul></div></div></div><div className="copyright">Baglamukhi-Mataji © 2026. <T en="All rights reserved." hi="सर्वाधिकार सुरक्षित।"/></div></footer>}
+function CurrentPage({path}:{path:string}) { if(havanData[path]) return <HavanPage data={havanData[path]}/>; const country=locationLinks.find(x=>x.path===path)?.label; if(country) return <LocationPage country={country}/>; switch(path){case'/gallery/':return <Gallery/>;case'/faqs/':return <FAQs/>;case'/about/':return <About/>;case'/packages/':return <Packages/>;case'/contact/':return <Contact/>;case'/blog/':return <Blog/>;case'/events/':return <Events/>;case'/donations/':return <Donations/>;default:return <Home/>}}
+export default function App(){const[path,setPath]=useState(location.pathname);const[language,setLanguage]=useState<Language>(()=>(localStorage.getItem('baglamukhi-language') as Language)||'en');useEffect(()=>{const h=()=>setPath(location.pathname);addEventListener('popstate',h);return()=>removeEventListener('popstate',h)},[]);useEffect(()=>{document.documentElement.lang=language;localStorage.setItem('baglamukhi-language',language);document.title=`${path==='/'?(language==='hi'?'मुखपृष्ठ':'Home'):path.split('/').filter(Boolean).pop()?.replaceAll('-',' ')} | Baglamukhi-Mataji`},[path,language]);return <LanguageContext.Provider value={{language,setLanguage}}><Header/><main id="content"><CurrentPage path={path}/></main><Footer/><a className="floating-whatsapp" href={whatsapp()} target="_blank" rel="noreferrer" aria-label="WhatsApp Priyanshu Pujari"><FaWhatsapp/></a><div className="mobile-booking"><a href="tel:+919425428725"><FaPhone/> <T en="Call" hi="कॉल"/></a><a href={whatsapp()} target="_blank" rel="noreferrer"><FaWhatsapp/> <T en="WhatsApp Booking" hi="व्हाट्सऐप बुकिंग"/></a></div></LanguageContext.Provider>}
